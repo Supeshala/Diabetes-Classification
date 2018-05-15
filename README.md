@@ -24,3 +24,5 @@ df = prep_admissions(df)
 return df
 
  ```
+ The Azure Machine Learning experiment should look like the following image upto this point. 
+ ![alt text](screenshots/cleaningdata.png "")
