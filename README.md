@@ -25,4 +25,4 @@ return df
 
  ```
  The Azure Machine Learning experiment should look like the following image upto this point. 
- ![alt text](Screenshots_AzureML/cleaningdata.png "")
+ ![alt text](Screenshots_AzureMLL/cleaningdata.png)
