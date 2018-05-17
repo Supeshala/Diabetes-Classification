@@ -97,7 +97,32 @@ At this moment the experiment on Azure Machine Learning Studio looks like this.
 Then add Normalize data and edit metadata module to the experiment and finally the experiment will look like this.
 ![alt text](Screenshots_AzureML/editmetadata.PNG)
 
-###Evaluate the Model
+### Building a Classification Model
 
+Here use two-class logistic regression as the machine learning classifier.
+Add a Split data and two class logistic regression module to the experiment. 
+Set the Properties of the Split Data module as follows:
+- Splitting mode: Split Rows
+- Fraction of rows in the first output: 0.6
+- Randomized split: Checked
+- Random seed: 123
+- Stratified split: False
+Then add two Class Logistic Regression module to the experiment and set its properties as follows:
+- Create trainer mode: Single Parameter
+- Optimization tolerance: 1E-07
+- L1 regularization weight: 0.001
+- L2 regularization weight: 0.001
+- Memory size for L-BFGS: 20
+- Random number seed: 1234
+- Allow unknown categorical levels: checked
+Finally add train module and score module to the experiment. Then the experiment will looks like this.
+
+![alt text](Screenshots_AzureML/scoreModel.PNG)
+
+### Evaluate the Model
+
+![alt text](Screenshots_AzureML/evaluateModel.PNG)
+
+![alt text](Screenshots_AzureML/evaluateModel1.PNG)
 
 
