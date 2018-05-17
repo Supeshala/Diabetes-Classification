@@ -26,3 +26,78 @@ return df
  ```
  The Azure Machine Learning experiment should look like the following image upto this point. 
  ![alt text](Screenshots_AzureML/cleaningdata.PNG)
+
+```
+def create_map():
+    ## List of tuples with name and number of repititons.
+    name_list = [('infections', 139),
+                ('neoplasms', (239 - 139)),
+                ('endocrine', (279 - 239)),
+                ('blood', (289 - 279)),
+                ('mental', (319 - 289)),
+                ('nervous', (359 - 319)),
+                ('sense', (389 - 359)),
+                ('circulatory', (459-389)),
+                ('respiratory', (519-459)),
+                ('digestive', (579 - 519)),
+                ('genitourinary', (629 - 579)),
+                ('pregnancy', (679 - 629)),
+                ('skin', (709 - 679)),
+                ('musculoskeletal', (739 - 709)),
+                ('congenital', (759 - 739)),
+                ('perinatal', (779 - 759)),
+                ('ill-defined', (799 - 779)),
+                ('injury', (999 - 799))]
+    ## Loop over the tuples to create a dictionary to map codes 
+    ## to the names.
+    out_dict = {}
+    count = 1
+    for name, num in name_list:
+        for i in range(num):
+          out_dict.update({str(count): name})  
+          count += 1
+    return out_dict
+  
+
+def map_codes(df, codes):
+    import pandas as pd
+    col_names = df.columns.tolist()
+    for col in col_names:
+        temp = [] 
+        for num in df[col]:           
+            if ((num is None) | (num in ['unknown', '?']) | (pd.isnull(num))): temp.append('unknown')
+            elif(num.upper()[0] == 'V'): temp.append('supplemental')
+            elif(num.upper()[0] == 'E'): temp.append('injury')
+            else: 
+                lkup = num.split('.')[0]
+                temp.append(codes[lkup])           
+        df.loc[:, col] = temp               
+    return df 
+
+def azureml_main(df):
+    col_list = ['diag_1', 'diag_2', 'diag_3']
+    codes = create_map()
+    df[col_list] = map_codes(df[col_list], codes)
+    return df
+    
+```
+This code deals with some non numeric coding for special diagnostic codes, and transforms numeric codes by indexing a vector of the text codes. Then the following code transforms the three categories in the label column (No, <30, >30) to two categories. This is required to support a two-class classification model.  
+```
+def set_readmit_class(x):
+    return ['NO' if (y == 'NO') else 'YES' for y in x]
+
+def azureml_main(df):
+    df['readmitted'] = set_readmit_class(df['readmitted'])
+    return df
+
+```
+At this moment the experiment on Azure Machine Learning Studio looks like this.
+![alt text](Screenshots_AzureML/readmitted.PNG)
+
+Then add Normalize data and edit metadata module to the experiment and finally the experiment will look like this.
+![alt text](Screenshots_AzureML/editmetadata.PNG)
+
+###Evaluate the Model
+
+
+
